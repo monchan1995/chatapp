@@ -11,6 +11,7 @@ body{
     width: 100vw;
     height: 64px;
     border-bottom: solid 1px #9b9b9b;
+    z-index: 1;
 }
 .header-container{
     position: relative;

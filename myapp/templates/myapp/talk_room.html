@@ -1,1 +1,53 @@
-TR
+{% extends "myapp/base.html" %}
+{% load static %}
+
+{% block extra_style %}
+<link rel="stylesheet" href="{% static 'myapp/css/talk_room.css' %}">
+{% endblock %}
+
+{% block header_title %}{{ friend.username }}{% endblock %}
+
+{% block talk_room %}
+<a href="{% url 'friends' %}" class="talk_room__back-btn">
+    <i class="fas fa-angle-left">&lt</i>
+</a>
+<a href="" class="talk_room__reload">更新</a>
+{% endblock %}
+
+{% block content %}
+<div class="talk_room">
+    <!-- トークの表示部分 -->
+    <ul class="chatboard" id="chatboard">
+        {% comment %} ifを使って送信or受信メッセージにそれぞれ異なるクラスを指定する。 {% endcomment %}
+        {% for talk in talk %}
+            <li class="chatboard__content chatboard__content--{% if talk.talk_from == user %}user{% else %}friend{% endif %}">
+                <p class="chatboard__name">{{ talk.talk_from }}</p>
+                <p class="chatboard__text">{{ talk.talk }}</p>
+                <p class="chatboard__time">{{ talk.time|date:"m/d" }}<br>{{ talk.time|date:"H:i" }}</p>
+            </li>
+        {%empty%}
+        <p class="no_message">There is no message (>_<)</p>
+        {% endfor %}
+    </ul>
+
+    <form class="talk_room__sendbox" method="POST">
+        {% csrf_token %}
+        {{ form.talk }}
+        <button class="talk_room__sendbox-btn" type="submit">送信</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block extra_js %}
+
+<script>
+    // トークの表示を新しいものを下にしているため、最下にスクロールさせる
+    // 画面全体をはみ出るくらいのメッセージがあった時にデフォルトで最新のメッセージを見れるようにする
+    document.addEventListener("DOMContentLoaded", function () {
+        const chatboard = document.getElementById("chatboard");
+        window.scroll(0, chatboard.scrollHeight);
+    });
+</script>
+{% endblock %}

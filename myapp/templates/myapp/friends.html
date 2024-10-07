@@ -1,0 +1,30 @@
+{% extends "myapp/base.html" %}
+{% load static %}
+
+{% block extra_style %}
+<link rel="stylesheet" type="text/css" href="{% static 'myapp/css/friends.css' %}">
+{% endblock %}
+
+{% block header_title %}友達{% endblock %}
+
+{% block content %}
+<div class="friends">
+    <ul class="friend-list">
+        {% for friend, talk, time in info %}
+        <a class="friend-list__link" href="{% url 'talk_room' friend.id %}">
+        <li class="friend-list__item">
+                <img class="friend-list__usericon" src="{{ friend.img.url }}">
+                <div class="friend-list__username">{{ friend.username }}</div>
+                {% if talk %}
+                <div class="friend-list__talk">
+                    <p class="friend-list__content">{{ talk }}</p>
+                    <p class="friend-list__time">{{ time|date:"n/j H:i" }}</p>
+                </div>
+                {% endif %}
+        </li>
+        </a>
+        {% empty %}
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

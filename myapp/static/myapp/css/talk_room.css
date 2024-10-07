@@ -1,0 +1,164 @@
+/* headerを避ける */
+.talk_room {
+  padding: 64px 0;
+}
+
+/* トークの表示部分 */
+.chatboard {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ここから簡易版のトーク画面 */
+.chatboard__content {
+  border-bottom: solid 2px #eee;
+  padding: 8px;
+}
+
+.chatboard__content:first-child {
+  border-top: solid 2px #eee;
+}
+
+.chatboard__name {
+  margin: 0 0 4px;
+  font-size: 0.8rem;
+}
+
+.chatboard__text {
+  margin: 0;
+  word-break: break-all;
+}
+
+.chatboard__time {
+  font-size: 0.6rem;
+  position: absolute;
+  right: 4%;
+  z-index: -1;
+}
+
+.chatboard__content {
+  list-style: none;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
+
+.chatboard__content:first-child {
+}
+
+.chatboard__content--user {
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
+
+.chatboard__content--user .chatboard__text {
+  margin: 4px 2% 4px 8px;
+  background-color: #98fb98;
+}
+
+.chatboard__content--friend .chatboard__text {
+  margin: 4px 8px 4px 2%;
+  background-color: #eee;
+}
+
+.chatboard__name {
+  display: none;
+}
+
+.chatboard__text {
+  margin: 0;
+  padding: 8px 12px;
+  width: max-content;
+  max-width: 70%;
+  border-radius: 16px;
+  word-break: break-all;
+}
+
+.chatboard__time {
+  font-size: 0.6rem;
+}
+
+.chatboard__content--user .chatboard__time {
+  margin: auto 0 8px auto;
+}
+
+.chatboard__content--friend .chatboard__time {
+  margin: auto auto 8px 0;
+} 
+
+/* トーク送信部分 */
+.talk_room__sendbox {
+  width: 100%;
+  min-height: 3rem;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  background-color: #eee;
+  font-size: 2rem;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+}
+
+input {
+  font-size: 1rem;
+  width: calc(100% - 6rem);
+  margin: 8px auto;
+  border: solid 2px #000;
+  border-radius: 32px;
+}
+
+.talk_room__sendbox-btn {
+  font-size: 1rem;
+  margin: auto 8px;
+  width: 4rem;
+  border: solid 2px #131313;
+  background: none;
+  border-radius: 32px;
+}
+
+/* talk_roomのみのheaderのcss */
+.header-container i {
+  font-size: 2rem;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  color: #888;
+  transform: translateY(-50%);
+}
+
+.talk_room__reload {
+  color: #888;
+  font-size: 1.2rem;
+  text-decoration: none;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  margin: auto;
+  padding: 4px 8px;
+  border: solid 2px #888;
+  border-radius: calc(1.2rem - 4px);
+  line-height: 1;
+}
+
+/* ここはbaseに入れたいな */
+header {
+  position: fixed;
+  background-color: #eee;
+}
+
+.footer-container {
+  background-color: #eee;
+}
+
+.no_message{
+  padding: 10%;
+  text-align: center;
+  font-size: 2em;
+}

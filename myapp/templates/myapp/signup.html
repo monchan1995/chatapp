@@ -1,1 +1,27 @@
-SU
+{% extends "./base.html" %}
+{% load static %}
+
+{% block extra_style %}
+<link rel="stylesheet" type="text/css" href="{% static 'myapp/css/signup.css' %}">
+{% endblock extra_style %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {% for field in form %}
+    <p>
+        {{ field.label_tag }}
+        {{ field }}
+        {% if field.errors %}
+            {{ field.errors }}
+        {% endif %}
+    </p>
+    {% endfor %}
+  {% if form.errors %}
+    <span>利用できない</span>
+  {% endif %}
+  <button type="submit">アカウント作成</button>
+</form>
+{% endblock content %}
+
+{% block footer %}{% endblock footer %}

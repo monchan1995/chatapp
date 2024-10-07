@@ -1,0 +1,101 @@
+/* headerを避ける */
+.friends {
+  padding: 64px 0;
+}
+
+/* バックエンド追加機能 */
+.friend-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  height: calc(100vh - 128px);
+}
+
+/*
+* margin:autoと横幅の指定でcalcを上手く利用することで、単位が違う横幅指定をしつつ
+* 全体のバランスを取れるように設計する
+*/
+.friend-list__item {
+  width: calc(100% - 32px);
+  height: 4rem;
+  padding: 8px 16px;
+  border-bottom: solid 1px #888;
+  position: relative;
+}
+
+/* 下にしか枠線を引いていないので、初めの要素にだけ上にも枠線を引くように設定 */
+.friend-list__item:first-child {
+  border-top: solid 1px #888;
+}
+
+.friend-list__link {
+  display: block;
+  text-decoration: none;
+  color: #000;
+}
+
+.friend-list__link:hover{
+  background-color:rgb(233, 233, 244);
+  transition: .5s;
+}
+
+.friends__list-wrap {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* ユーザーアイコンの表示 */
+.friend-list__usericon {
+  position: absolute;
+  /* 縦横の長さを合わせる */
+  height: calc(4rem - 16px);
+  width: calc(4rem - 16px);
+  border: solid 3px #000;
+  border-radius: 50%;
+  float: left;
+  object-fit: cover;
+  /* z-index: -1; */
+}
+
+.friend-list__username {
+  font-size: 1.2rem;
+  width: calc(100% - 4rem - 8px);
+  margin: 0 0 0 auto;
+}
+
+/* LINEのようにユーザーの最後のやりとりを表示できるようにしてみる */
+.friend-list__talk {
+  width: calc(100% - 4rem - 8px);
+  margin: 1rem 0 1rem auto;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.friend-list__content {
+  max-width: calc(100% - 2.4rem - 16px);
+  margin: auto 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.friend-list__time {
+  width: 2.4rem;
+  margin: auto 0;
+}
+/* ここまで　LINEのようにユーザーの最後のやりとりを表示できるようにしてみる */
+
+/* ここはbaseに入れたいな */
+header {
+  position: fixed;
+  background-color: #eee;
+}
+
+.footer-container {
+  background-color: #eee;
+}

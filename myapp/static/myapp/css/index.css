@@ -1,0 +1,10 @@
+.signup_button, .login_button{
+  all: initial;
+  display: block;
+  width: 30%;
+  border: 1px solid #000;
+  margin: 5em auto;
+  padding: 2em;
+  border-radius: 1.5em;
+  text-align: center;
+}
