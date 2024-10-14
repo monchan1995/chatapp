@@ -9,22 +9,31 @@
 
 {% block content %}
 <div class="friends">
-    <ul class="friend-list">
-        {% for friend, talk, time in info %}
-        <a class="friend-list__link" href="{% url 'talk_room' friend.id %}">
-        <li class="friend-list__item">
-                <img class="friend-list__usericon" src="{{ friend.img.url }}">
-                <div class="friend-list__username">{{ friend.username }}</div>
-                {% if talk %}
-                <div class="friend-list__talk">
-                    <p class="friend-list__content">{{ talk }}</p>
-                    <p class="friend-list__time">{{ time|date:"n/j H:i" }}</p>
-                </div>
-                {% endif %}
-        </li>
-        </a>
-        {% empty %}
-        {% endfor %}
-    </ul>
+  <form class="search-form" method="GET">
+    <i class="fas fa-search"></i>
+    {{ form.keyword }}
+    <button class="friends__search-btn" name="friends_search" type="submit">検索</button>
+    {% comment %} 上のbuttonのname属性の値がクエリパラメータとして自動的にurlに追加される。value属性を指定することで属性値を与えることもできる。?(nameの値)=(valueの値)がurlの末尾に追加される。 {% endcomment %}
+  </form>
+  <ul class="friend-list">
+    {% if is_searched %}
+    <li class="search-text">-- 検索結果 --</li>
+    {% endif %}
+    {% for friend, talk, time in info %}
+    <a class="friend-list__link" href="{% url 'talk_room' friend.id %}">
+    <li class="friend-list__item">
+            <img class="friend-list__usericon" src="{{ friend.img.url }}">
+            <div class="friend-list__username">{{ friend.username }}</div>
+            {% if talk %}
+            <div class="friend-list__talk">
+                <p class="friend-list__content">{{ talk }}</p>
+                <p class="friend-list__time">{{ time|date:"n/j H:i" }}</p>
+            </div>
+            {% endif %}
+    </li>
+    </a>
+    {% empty %}
+    {% endfor %}
+  </ul>
 </div>
 {% endblock %}

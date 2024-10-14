@@ -1,0 +1,37 @@
+{% extends "myapp/base.html" %}
+{% load static %}
+
+{% block content %}
+<form action="{% url 'account_signup' %}" enctype='multipart/form-data' method='post'>
+  <div class='container'>
+      {{ form.non_foeld_errors }}
+      {% csrf_token %}
+      <div class='form'>
+        ユーザーネーム:{{ form.username }}
+      </div>
+      <div class='form'>
+        メールアドレス：{{ form.email }}
+      </div>
+      <div class='form'>
+        パスワード：{{ form.password1 }}
+      </div>
+      <div class='form'>        
+        パスワード(確認)：{{ form.password2 }}
+      </div>
+      <div class='form'>
+          プロフィール用画像<br>{{ form.img }}
+      </div>
+      {% if form.errors %}
+      {% for item in form %}
+      <div>
+          {{ item.errors }}
+      </div>
+      {% endfor %}
+      {% endif %}
+  </div>
+  {% if redirect_field_value %}
+  <input type='hidden' name='{{ redirect_field_name }}' value='{{redirect_field_value}}' />
+  {% endif %}
+  <div><input type='submit' class='submit-button' value='登録'></div>
+</form>
+{% endblock content %}

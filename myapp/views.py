@@ -18,10 +18,12 @@ from .forms import (
     PasswordChangeForm,
     UserNameSettingForm,
     MailSettingForm,
-    LoginForm
+    LoginForm,
+    FriendsSearchForm,
 )
 
 from .models import CustomUser,Talk
+from .utils import create_info_list 
 
 from django.views.generic import ListView
 
@@ -89,32 +91,36 @@ def friends(request):
     user = request.user
     friends = User.objects.exclude(id=user.id)
 
-    info = []
-    info_have_message = []
-    info_have_no_message = []
+    #create_info_list()関数は、ログインしているユーザーを表すuserとuser以外のアカウント全体のquerysetを表すfriendsを入力として、userのトーク内容をいい感じに更新が最新のものが前になった多次元リストを作成する。
+    info = create_info_list(user, friends)
     
-    for friend in friends:
-        #フレンド毎に最新のトークオブジェクトを取ってくる
-        latest_message = Talk.objects.filter(
-            Q(talk_from=user, talk_to=friend) | Q(talk_to=user, talk_from=friend)
-        ).order_by('time').last()
-        #Nullかどかの場合分け
-        if latest_message:
-            info_have_message.append([friend, latest_message.talk, latest_message.time])
-        else:
-            info_have_no_message.append([friend, None, None])
+    # 検索機能
+    form = FriendsSearchForm()
 
-    #フレンド全体
-    #info_have_messageを三番目(コンピュータ的には0,1,2の2)のlatest_message.timeを基準に並べ替える
-    info_have_message = sorted(info_have_message, key=operator.itemgetter(2), reverse=True)
-    
-    info.extend(info_have_message)
-    info.extend(info_have_no_message)
-    
+    if request.method == "GET" and "friends_search" in request.GET:
+        form = FriendsSearchForm(request.GET)
+
+        # 送信内容があった場合
+        if form.is_valid():
+            keyword = form.cleaned_data.get("keyword")
+            if keyword:
+                friends = friends.filter(username__icontains=keyword)
+                info = create_info_list(user, friends)
+                context = {
+                    "info": info,
+                    "form": form,
+                    # 検索結果を表示していることを示すためのブーリアン
+                    "is_searched": True,
+                }
+                return render(request, "myapp/friends.html", context)
+
+    #上のreturnが実行されなかったら普通に全ユーザーモデルを表示する
     context = {
         "info": info,
+        "form": form,
     }
     return render(request, "myapp/friends.html", context)
+
 
 @login_required
 def talk_room(request, user_id):
