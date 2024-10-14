@@ -29,12 +29,10 @@ class TalkForm(forms.ModelForm):
         fields = ("talk",)
         # 入力予測の表示をさせない（めっちゃ邪魔）
         widgets = {"talk": forms.TextInput(attrs={"autocomplete": "off"})}
-
 class ImageSettingForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ("img",)
-
 class MailSettingForm(forms.ModelForm):
     class Meta:
         model = User

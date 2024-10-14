@@ -175,7 +175,7 @@ DEFAULT_FROM_EMAIL = 'simon.torii@example.com'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 #自分で作ったフォームで認証させる
-ACCOUNT_FORMS = {
-    'login': 'myapp.forms.',
-    'signup': 'myapp.forms.MySignupForm',
-}
+# ACCOUNT_FORMS = {
+#     'login': 'myapp.forms.LoginForm',
+#     'signup': 'myapp.forms.SignUpForm',
+# }

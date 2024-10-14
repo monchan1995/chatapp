@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 
 class CustomUser(AbstractUser):
-  img = models.ImageField(upload_to="", verbose_name="アイコン", default="media/一回前期_採点.JPEG")
+  img = models.ImageField(upload_to="", verbose_name="アイコン", default="/baby_role_towel_utsubuse.png")
 
 class Talk(models.Model):
     talk = models.CharField(max_length=500)
