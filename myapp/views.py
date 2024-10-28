@@ -153,23 +153,7 @@ def friends(request):
         .order_by(F("latest_msg_time").desc(nulls_last=True))
     )
     
-    # 速いクエリ
-    """
-    friends = (
-        User.objects.exclude(id=user.id)
-        .annotate(
-            send_max=Max("talk_from__time", filter=Q(talk_from__talk_to=user)),
-            receive_max=Max("talk_to__time", filter=Q(talk_to__talk_from=user)),
-            latest_time=Greatest("send_max", "receive_max"),
-            latest_msg_time=Coalesce("latest_time", "send_max", "receive_max"),
-            latest_msg_talk=Case(
-                When(latest_msg_time=F("talk_to__time"), then=F("talk_to__talk")),
-                When(latest_msg_time=F("talk_from__time"), then=F("talk_from__talk"))
-            )
-        ).order_by(F("latest_msg_time").desc(nulls_last=True))
-    )
-    """
-    # 検索機能あり
+    #検索機能
     form = FriendsSearchForm()
 
     if request.method == "GET" and "friends_search" in request.GET:
@@ -187,8 +171,6 @@ def friends(request):
                     | Q(latest_msg_talk__icontains=keyword)   # 最新のトーク内容の部分一致
                 )
 
-                # 入力情報を保持してテキストボックスに残すようにする
-                # （ユーザーが検索したキーワードを見られるように）
                 request.session["keyword"] = request.GET
 
                 # friendsに何らか情報があったとき
@@ -200,7 +182,7 @@ def friends(request):
                 }
                 return render(request, "myapp/friends.html", context)
 
-    # ここまで　検索機能あり
+    # ここまでが検索機能
 
     # POSTでない（リダイレクトorただの更新）& 検索欄に入力がない場合
     context = {
