@@ -8,7 +8,7 @@ from django.contrib.auth.views import (
     PasswordChangeDoneView,
     PasswordChangeView,
 )
-from django.db.models import Q
+from django.db.models import Q, F, OuterRef, Subquery, Max, Case, When
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from .forms import (
@@ -86,23 +86,25 @@ class Login(LoginView):
 class Logout(LoginRequiredMixin, LogoutView):
     """ログアウトページ"""
 
+"""
 @login_required
 def friends(request):
     user = request.user
-    friends = User.objects.exclude(id=user.id)
+    friends = User.objects.exclude(id=user.id).prefetch_related("talk_to", "talk_from")
 
-    #create_info_list()関数は、ログインしているユーザーを表すuserとuser以外のアカウント全体のquerysetを表すfriendsを入力として、userのトーク内容をいい感じに更新が最新のものが前になった多次元リストを作成する。
+    #create_info_list()関数は、ログインしているユーザーを表すuserとuser以外のアカウント全体のquerysetを表すfriendsを入力として、userのトーク内容で更新が最新のものが先頭に近くなった多次元リストを作成する。
     info = create_info_list(user, friends)
     
     # 検索機能
     form = FriendsSearchForm()
-
     if request.method == "GET" and "friends_search" in request.GET:
         form = FriendsSearchForm(request.GET)
+
 
         # 送信内容があった場合
         if form.is_valid():
             keyword = form.cleaned_data.get("keyword")
+            email_keyword = form.cleaned_data.get("email")
             if keyword:
                 friends = friends.filter(username__icontains=keyword)
                 info = create_info_list(user, friends)
@@ -113,6 +115,17 @@ def friends(request):
                     "is_searched": True,
                 }
                 return render(request, "myapp/friends.html", context)
+            
+            if email_keyword:
+                friends = friends.filter(email__icontains=email_keyword)
+                info = create_info_list(user, friends)
+                context = {
+                    "info": info,
+                    "form": form,
+                    # 検索結果を表示していることを示すためのブーリアン
+                    "is_searched": True,
+                }
+            
 
     #上のreturnが実行されなかったら普通に全ユーザーモデルを表示する
     context = {
@@ -120,7 +133,81 @@ def friends(request):
         "form": form,
     }
     return render(request, "myapp/friends.html", context)
+"""
 
+@login_required
+def friends(request):
+    user = request.user
+
+    latest_msg = Talk.objects.filter(
+        Q(talk_from=OuterRef("pk"), talk_to=user)
+        | Q(talk_from=user, talk_to=OuterRef("pk"))
+    ).order_by("-time")
+    
+    friends = (
+        User.objects.exclude(id=user.id)
+        .annotate(
+            latest_msg_talk=Subquery(latest_msg.values("talk")[:1]),
+            latest_msg_time=Subquery(latest_msg.values("time")[:1]),
+        )
+        .order_by(F("latest_msg_time").desc(nulls_last=True))
+    )
+    
+    # 速いクエリ
+    """
+    friends = (
+        User.objects.exclude(id=user.id)
+        .annotate(
+            send_max=Max("talk_from__time", filter=Q(talk_from__talk_to=user)),
+            receive_max=Max("talk_to__time", filter=Q(talk_to__talk_from=user)),
+            latest_time=Greatest("send_max", "receive_max"),
+            latest_msg_time=Coalesce("latest_time", "send_max", "receive_max"),
+            latest_msg_talk=Case(
+                When(latest_msg_time=F("talk_to__time"), then=F("talk_to__talk")),
+                When(latest_msg_time=F("talk_from__time"), then=F("talk_from__talk"))
+            )
+        ).order_by(F("latest_msg_time").desc(nulls_last=True))
+    )
+    """
+    # 検索機能あり
+    form = FriendsSearchForm()
+
+    if request.method == "GET" and "friends_search" in request.GET:
+        form = FriendsSearchForm(request.GET)
+
+        # 送信内容があった場合
+        if form.is_valid():
+            keyword = form.cleaned_data.get("keyword")
+            # 何も入力せずに検索した時に全件を表示するようにするため、分岐しておく
+            if keyword:
+                # 入力に対して部分一致する友達を絞り込む
+                friends = friends.filter(
+                    Q(username__icontains=keyword)            # ユーザーネームの部分一致
+                    | Q(email__icontains=keyword)             # メールアドレスの部分一致
+                    | Q(latest_msg_talk__icontains=keyword)   # 最新のトーク内容の部分一致
+                )
+
+                # 入力情報を保持してテキストボックスに残すようにする
+                # （ユーザーが検索したキーワードを見られるように）
+                request.session["keyword"] = request.GET
+
+                # friendsに何らか情報があったとき
+                context = {
+                    "friends": friends,
+                    "form": form,
+                    # 検索結果を表示する画面にするために、そうであることを明示する変数を作る
+                    "is_searched": True,
+                }
+                return render(request, "myapp/friends.html", context)
+
+    # ここまで　検索機能あり
+
+    # POSTでない（リダイレクトorただの更新）& 検索欄に入力がない場合
+    context = {
+        "friends": friends,
+        "form": form,
+    }
+    return render(request, "myapp/friends.html", context)
 
 @login_required
 def talk_room(request, user_id):

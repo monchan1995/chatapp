@@ -55,11 +55,19 @@ class FriendsSearchForm(forms.Form):
         label="検索",
         required=False,
         widget=forms.TextInput(attrs={
-            "placeholder": "ユーザー名で検索",
+            "placeholder": "検索",
             "autocomplete": "off",
-            }
-        ),
-    )
+            })
+        )
+
+    email = forms.CharField(
+        label="検索",
+        required=False,
+        widget=forms.TextInput(attrs={
+            "placeholder": "メールアドレスで検索",
+            "autocomplete": "off",
+            })
+        )
 
 class MySignupForm(SignupForm):
     """ Userクラス用フォーム """

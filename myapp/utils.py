@@ -2,18 +2,23 @@ import operator
 
 from django.db.models import Q
 
-from .models import Talk
+from .models import Talk, CustomUser
 
 
 def create_info_list(user, friends):
 # トーク情報とフレンド情報を含む info を作成
+    talks = Talk.objects.prefetch_related("talk_to", "talk_from").all()
+    talks = Talk.objects.all()
+    talks = talks.annotate(
+        talk_to = a
+    )
     info = []
     info_have_message = []
     info_have_no_message = []
     
     for friend in friends:
         # 最新のメッセージの取得
-        latest_message = Talk.objects.filter(
+        latest_message = talks.filter(
             Q(talk_from=user, talk_to=friend) | Q(talk_to=user, talk_from=friend)
         ).order_by('time').last()
 

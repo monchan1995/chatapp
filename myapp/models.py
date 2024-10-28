@@ -9,9 +9,7 @@ class CustomUser(AbstractUser):
 
 class Talk(models.Model):
     talk = models.CharField(max_length=500)
-    talk_from = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="talk_from"
-    )
+    talk_from = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="talk_from")
     talk_to = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="talk_to")
     time = models.DateTimeField(auto_now_add=True)
 

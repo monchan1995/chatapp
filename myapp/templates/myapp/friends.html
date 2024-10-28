@@ -15,19 +15,25 @@
     <button class="friends__search-btn" name="friends_search" type="submit">検索</button>
     {% comment %} 上のbuttonのname属性の値がクエリパラメータとして自動的にurlに追加される。value属性を指定することで属性値を与えることもできる。?(nameの値)=(valueの値)がurlの末尾に追加される。 {% endcomment %}
   </form>
+  {% comment %}
+   <form class="search-form" method="GET">
+    <button class="friends__search-btn" name="friends_search" type="submit">検索</button>
+  </form>
+ {% endcomment %}
+  
   <ul class="friend-list">
     {% if is_searched %}
     <li class="search-text">-- 検索結果 --</li>
     {% endif %}
-    {% for friend, talk, time in info %}
+    {% for friend in friends %}
     <a class="friend-list__link" href="{% url 'talk_room' friend.id %}">
     <li class="friend-list__item">
             <img class="friend-list__usericon" src="{{ friend.img.url }}">
             <div class="friend-list__username">{{ friend.username }}</div>
-            {% if talk %}
+            {% if friend.latest_msg_talk %}
             <div class="friend-list__talk">
-                <p class="friend-list__content">{{ talk }}</p>
-                <p class="friend-list__time">{{ time|date:"n/j H:i" }}</p>
+                <p class="friend-list__content">{{ friend.latest_msg_talk }}</p>
+                <p class="friend-list__time">{{ friend.latest_msg_time|date:"n/j H:i" }}</p>
             </div>
             {% endif %}
     </li>

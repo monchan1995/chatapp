@@ -41,7 +41,9 @@ INSTALLED_APPS = [
 
     'django.contrib.sites',
     'allauth',
-    'allauth.account'
+    'allauth.account',
+
+    'debug_toolbar' #ツールバー
 ]
 
 MIDDLEWARE = [
@@ -53,7 +55,15 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+
+    'debug_toolbar.middleware.DebugToolbarMiddleware', #ツールバー
 ]
+
+INTERNAL_IPS = ['127.0.0.1']
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK" : lambda request: True,
+}
 
 ROOT_URLCONF = 'intern.urls'
 
