@@ -1,0 +1,53 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block extra_style %}
+<link rel="stylesheet" type="text/css" href="{% static 'myapp/css/edit.css' %}" />
+{% endblock %}
+
+{% block header %}
+    <header class="header">
+        <div class="header-container">
+            <div class='back'><a href='{% url "index" %}' class='back-button'>＜</a></div>
+            <div class='title'>
+                ログイン
+            </div>
+        </div>
+    </header>
+{% endblock %}
+
+{% block content %}
+<div class='container'>
+<form action='{% url "account_login" %}' method='POST'>
+    {{ form.non_foeld_errors }}
+    {% csrf_token %}
+    {% for field in form %}
+    {% if field != form.remember %}
+    <div class='form'>
+        {{ field }}
+    </div>
+    {% endif %}
+    {% endfor %}
+
+    {% if form.errors %}
+        <div>
+            メールアドレス、またはパスワードが正しくありません。
+        </div>
+    {% endif %}
+
+    {% if redirect_field_value %}
+        <input type='hidden' name='{{ redirect_field_name }}' value='{{redirect_field_value}}' />
+    {% endif %}
+
+    <div><button type='submit' class='submit-button'>ログイン</button></div>
+
+    <p><a href="{% url 'account_reset_password' %}">パスワードを忘れましたか?</a></p>
+    <p><a href="{% url 'account_signup' %}">登録していない方はこちら</a></p>
+
+
+</form>
+</div>
+
+{% endblock %}
+
+{% block footer %}{% endblock %}
